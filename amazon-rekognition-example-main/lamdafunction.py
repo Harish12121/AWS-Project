@@ -12,7 +12,7 @@ s3 = boto3.client('s3')
 rekognition = boto3.client('rekognition')
 
 
-# --------------- Helper Functions ------------------
+
 
 def index_faces(bucket, key):
 
@@ -32,7 +32,7 @@ def update_index(tableName,faceId, fullName):
             }
         ) 
     
-# --------------- Main handler ------------------
+
 
 def lambda_handler(event, context):
 
@@ -41,17 +41,15 @@ def lambda_handler(event, context):
     print("Records: ",event['Records'])
     key = event['Records'][0]['s3']['object']['key']
     print("Key: ",key)
-    # key = key.encode()
-    # key = urllib.parse.unquote_plus(key)
+  
 
     try:
 
-        # Calls Amazon Rekognition IndexFaces API to detect faces in S3 object 
-        # to index faces into specified collection
+    
         
         response = index_faces(bucket, key)
         
-        # Commit faceId and full name object metadata to DynamoDB
+        
         
         if response['ResponseMetadata']['HTTPStatusCode'] == 200:
             faceId = response['FaceRecords'][0]['Face']['FaceId']
@@ -61,7 +59,7 @@ def lambda_handler(event, context):
 
             update_index('face_recognition',faceId,personFullName)
 
-        # Print response to console
+       
         print(response)
 
         return response
